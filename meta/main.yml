@@ -1,0 +1,15 @@
+galaxy_info:
+  author: Colin Sullivan
+  description: colin-sullivan.net
+  license: MIT
+  min_ansible_version: 1.2
+  galaxy_tags:
+    - supercollider
+    - audio
+    - music
+    - raspberrypi
+  platforms:
+    - name: Debian
+      versions:
+        - stretch
+dependencies: []

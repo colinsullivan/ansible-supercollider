@@ -1,0 +1,88 @@
+---
+- name: supercollider deps
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - libsamplerate0-dev
+    - libsndfile1-dev
+    - libasound2-dev
+    - libavahi-client-dev
+    - libreadline6-dev
+    - libfftw3-dev
+    - libxt-dev
+    - libudev-dev
+    - libcwiid-dev
+    - qttools5-dev-tools
+    - libqt5webkit5-dev
+    - qtpositioning5-dev
+    - libqt5sensors5-dev
+    - cmake
+    - git
+
+- name: src dir
+  file:
+    path: /usr/local/src
+    state: directory
+
+- name: clone supercollider repo
+  git:
+    repo: https://github.com/supercollider/supercollider.git
+    dest: /usr/local/src/supercollider
+    clone: yes
+    recursive: yes
+    version: Version-3.9.3
+
+- name: build dir
+  file:
+    path: /usr/local/src/supercollider/build
+    state: directory
+
+- name: configure sc
+  shell: cmake -L -DCMAKE_BUILD_TYPE="Release" -DBUILD_TESTING=OFF -DSUPERNOVA=OFF -DNATIVE=ON -DSC_WII=ON -DSC_IDE=OFF -DSC_QT=ON -DSC_ED=OFF -DSC_EL=OFF -DSC_VIM=ON ..
+  args:
+    chdir: /usr/local/src/supercollider/build
+    creates: /usr/local/src/supercollider/build/CMakeFiles
+
+- name: build sc
+  shell: make -j 4
+  args:
+    chdir: /usr/local/src/supercollider/build
+    creates: /usr/local/src/supercollider/build/lang/sclang
+
+- name: install sc
+  shell: make install
+  args:
+    chdir: /usr/local/src/supercollider/build
+    creates: /usr/local/bin/scsynth
+
+- name: clone sc3-plugins repo
+  git:
+    repo: https://github.com/supercollider/sc3-plugins.git
+    dest: /usr/local/src/sc3-plugins
+    clone: yes
+    recursive: yes
+    version: Version-3.9.1
+
+- name: sc3 build dir
+  file:
+    path: /usr/local/src/sc3-plugins/build
+    state: directory
+
+- name: configure sc3-plugins
+  shell: cmake -L -DCMAKE_BUILD_TYPE="Release" -DSUPERNOVA=OFF -DNATIVE=ON -DSC_PATH=../../supercollider/ ..
+  args:
+    chdir: /usr/local/src/sc3-plugins/build
+    creates: /usr/local/src/sc3-plugins/build/CMakeFiles
+
+- name: build sc3-plugins
+  shell: make -j 4
+  args:
+    chdir: /usr/local/src/sc3-plugins/build
+    creates: /usr/local/src/sc3-plugins/build/source/StkInst/StkInst.so
+
+- name: install sc3-plugins
+  shell: make install
+  args:
+    chdir: /usr/local/src/sc3-plugins/build
+    creates: /usr/local/lib/SuperCollider/plugins/StkInst.so
