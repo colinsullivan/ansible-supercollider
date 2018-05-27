@@ -25,13 +25,13 @@
     path: /usr/local/src
     state: directory
 
-- name: clone supercollider repo
+- name: clone supercollider repo from colinsullivan (no gui)
   git:
-    repo: https://github.com/supercollider/supercollider.git
+    repo: https://github.com/colinsullivan/supercollider.git
     dest: /usr/local/src/supercollider
     clone: yes
     recursive: yes
-    version: Version-3.9.3
+    version: Version-3.9.3_no-gui
 
 - name: build dir
   file:
@@ -39,7 +39,7 @@
     state: directory
 
 - name: configure sc
-  shell: cmake -L -DCMAKE_BUILD_TYPE="Release" -DBUILD_TESTING=OFF -DSUPERNOVA=OFF -DNATIVE=ON -DSC_WII=ON -DSC_IDE=OFF -DSC_QT=ON -DSC_ED=OFF -DSC_EL=OFF -DSC_VIM=ON ..
+  shell: cmake -L -DCMAKE_BUILD_TYPE="Release" -DBUILD_TESTING=OFF -DSUPERNOVA=OFF -DNATIVE=ON -DSC_WII=ON -DSC_IDE=OFF -DSC_QT=OFF -DSC_ED=OFF -DSC_EL=OFF -DSC_VIM=ON ..
   args:
     chdir: /usr/local/src/supercollider/build
     creates: /usr/local/src/supercollider/build/CMakeFiles
@@ -54,7 +54,6 @@
   shell: make install
   args:
     chdir: /usr/local/src/supercollider/build
-    creates: /usr/local/bin/scsynth
 
 - name: clone sc3-plugins repo
   git:
@@ -85,4 +84,3 @@
   shell: make install
   args:
     chdir: /usr/local/src/sc3-plugins/build
-    creates: /usr/local/lib/SuperCollider/plugins/StkInst.so
