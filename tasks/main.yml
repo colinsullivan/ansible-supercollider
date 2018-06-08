@@ -45,7 +45,7 @@
     creates: /usr/local/src/supercollider/build/CMakeFiles
 
 - name: build sc
-  shell: make -j 4
+  shell: "make -j {{ num_cpu_cores }}"
   args:
     chdir: /usr/local/src/supercollider/build
     creates: /usr/local/src/supercollider/build/lang/sclang
@@ -54,6 +54,7 @@
   shell: make install
   args:
     chdir: /usr/local/src/supercollider/build
+    creates: /usr/local/bin/sclang
 
 - name: clone sc3-plugins repo
   git:
@@ -84,3 +85,4 @@
   shell: make install
   args:
     chdir: /usr/local/src/sc3-plugins/build
+    creates: /usr/local/lib/SuperCollider/plugins/StkInst.so
