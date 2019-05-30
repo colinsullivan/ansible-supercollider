@@ -1,24 +1,9 @@
 ---
 - name: supercollider deps
   apt:
-    name: "{{ item }}"
+    name: ['libsamplerate0-dev', 'libsndfile1-dev', 'libasound2-dev',
+    'libavahi-client-dev', 'libreadline6-dev', 'libfftw3-dev', 'libxt-dev', 'libudev-dev', 'libcwiid-dev', 'build-essential', 'python-dev', 'alsa-utils', 'cpufrequtils', 'cmake', 'git']
     state: present
-  with_items:
-    - libsamplerate0-dev
-    - libsndfile1-dev
-    - libasound2-dev
-    - libavahi-client-dev
-    - libreadline6-dev
-    - libfftw3-dev
-    - libxt-dev
-    - libudev-dev
-    - libcwiid-dev
-    - qttools5-dev-tools
-    - libqt5webkit5-dev
-    - qtpositioning5-dev
-    - libqt5sensors5-dev
-    - cmake
-    - git
 
 - name: src dir
   file:
@@ -45,7 +30,7 @@
     creates: /usr/local/src/supercollider/build/CMakeFiles
 
 - name: build sc
-  shell: "make -j {{ num_cpu_cores }}"
+  shell: "make -j {{ supercollider_num_cpu_cores }}"
   args:
     chdir: /usr/local/src/supercollider/build
     creates: /usr/local/src/supercollider/build/lang/sclang
